@@ -1,0 +1,50 @@
+{
+  "users": [
+    {
+      "name": "Sidney",
+      "email": "Sidney@sc.com",
+      "id": 1
+    },
+    {
+      "name": "Miko",
+      "email": "Miko@mc.com",
+      "id": 2
+    },
+    {
+      "name": "Fenrir",
+      "email": "Fenrir@fc.com",
+      "id": 3
+    },
+    {
+      "name": "Digby",
+      "email": "Digby@dc.com",
+      "id": 4
+    },
+    {
+      "name": "Rob",
+      "email": "Robert@rc.com",
+      "id": 5
+    },
+    {
+      "name": "Marit",
+      "email": "Marit@mbc.com",
+      "id": 6
+    },
+    {
+      "name": "Brody",
+      "email": "Brody@bec.com",
+      "id": 7
+    }
+  ],
+  "posts": [
+    {
+      "imageURL": "https://media.giphy.com/media/26xBI73gWquCBBCDe/giphy.gif",
+      "userId": 6,
+      "description": "Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.\n\nDuis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.",
+      "timestamp": 1561695022812,
+      "title": "Enhanced global utilisation",
+      "id": 1
+    }
+  ],
+  "messages": []
+}
