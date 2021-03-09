@@ -2,7 +2,7 @@ export const NavBar = () => {
     return `
         <nav class="navigation">
             <div class="navigation__item navigation__icon">
-                <img src="../images/pb.jpeg" alt="Giffygram icon" />
+                <img id="homeIcon" src="../images/pb.jpeg" alt="Giffygram icon" />
             </div>
             <div class="navigation__item navigation__name">
                 Giffygram
