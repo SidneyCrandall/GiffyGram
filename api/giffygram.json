@@ -39,7 +39,7 @@
   "posts": [
     {
       "imageURL": "https://media.giphy.com/media/26xBI73gWquCBBCDe/giphy.gif",
-      "userId": 6,
+      "userId": 1,
       "description": "Proin eu mi. Nulla ac enim. In tempor, turpis nec euismod scelerisque, quam turpis adipiscing lorem, vitae mattis nibh ligula nec sem.\n\nDuis aliquam convallis nunc. Proin at turpis a pede posuere nonummy. Integer non velit.",
       "timestamp": 1561695022812,
       "title": "Enhanced global utilisation",
@@ -110,7 +110,7 @@
       "id": 11
     },
     {
-      "title": "Checking code",
+      "title": "I have edited this code",
       "imageURL": "https://media.giphy.com/media/TLIHj45OqIvOE/giphy.gif",
       "description": "Because I worried I messed up code.",
       "userId": 1,
