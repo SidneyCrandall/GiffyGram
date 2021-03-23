@@ -6,6 +6,7 @@
       </header>
       <img class="post__image" src="${postObject.imageURL}" alt="${postObject.description}"/>
       <div><button id="edit--${postObject.id}">Edit</div>
+      <div><button id="delete__${postObject.id}">Delete</button></div>
     </section>
   `
   }
