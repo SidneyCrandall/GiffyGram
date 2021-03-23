@@ -1,9 +1,8 @@
-import { getPosts, usePostCollection, createPost, getLoggedInUser } from "./data/DataManager.js";
+import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser } from "./data/DataManager.js";
 import { PostList } from "./feed/PostList.js";
 import { NavBar } from "./nav/NavBar.js";
 import { Footer } from "./nav/Footer.js";
 import { PostEntry } from "./feed/PostEntry.js";
-
 
 const applicationElement = document.querySelector("main");
 
@@ -70,6 +69,17 @@ applicationElement.addEventListener("click", event => {
     }
 })
 
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id.startsWith("delete")) {
+      const postId = event.target.id.split("__")[1];
+      deletePost(postId)
+        .then(response => {
+          showPostList();
+        })
+    }
+  })
+
 const showFilteredPosts = (year) => {
     //get a copy of the post collection
     const epoch = Date.parse(`01/01/${year}`);
@@ -79,7 +89,6 @@ const showFilteredPosts = (year) => {
             return singlePost
         }
     })
-
     const postElement = document.querySelector(".postList");
     postElement.innerHTML = PostList(filteredData);
 }
