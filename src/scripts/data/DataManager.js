@@ -9,15 +9,6 @@ export const usePostCollection = () => {
     return [...postCollection];
 }
 
-export const getPosts = () => {
-    return fetch("http://localhost:8088/posts")
-        .then(response => response.json())
-        .then(parsedResponse => {
-            postCollection = parsedResponse
-            return parsedResponse;
-        })
-}
-
 export const createPost = postObj => {
     return fetch("http://localhost:8088/posts", {
         method: "POST",
@@ -61,7 +52,7 @@ export const updatePost = postObj => {
 let loggedInUser = {};
 
 export const getLoggedInUser = () => {
-    return {...loggedInUser };
+    return { ...loggedInUser };
 }
 
 export const logoutUser = () => {
@@ -70,5 +61,46 @@ export const logoutUser = () => {
 
 export const setLoggedInUser = (userObj) => {
     loggedInUser = userObj;
-  }
-  
+}
+
+export const loginUser = (userObj) => {
+    return fetch(`http://localhost:8088/users?name=${userObj.name}&email=${userObj.email}`)
+        .then(response => response.json())
+        .then(parsedUser => {
+            //is there a user?
+            console.log("parsedUser", parsedUser) //data is returned as an array
+            if (parsedUser.length > 0) {
+                setLoggedInUser(parsedUser[0]);
+                return getLoggedInUser();
+            } else {
+                //no user
+                return false;
+            }
+        })
+}
+
+export const registerUser = (userObj) => {
+    return fetch(`http://localhost:8088/users`, {
+      method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userObj)
+    })
+    .then(response => response.json())
+    .then(parsedUser => {
+      setLoggedInUser(parsedUser);
+      return getLoggedInUser();
+    })
+}
+
+export const getPosts = () => {
+    const userId = getLoggedInUser().id
+    return fetch(`http://localhost:8088/posts?_expand=user`)
+      .then(response => response.json())
+      .then(parsedResponse => {
+        console.log("data with user", parsedResponse)
+        postCollection = parsedResponse
+        return parsedResponse;
+      })
+}

@@ -1,21 +1,13 @@
-<<<<<<< HEAD
-import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, logoutUser, setLoggedInUser } from "./data/DataManager.js";
-=======
-import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, updatePost, getSinglePost, getUsers } from "./data/DataManager.js";
->>>>>>> main
+import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, updatePost, getSinglePost, getUsers, loginUser, registerUser, setLoggedInUser, logoutUser } from "./data/DataManager.js";
 import { PostList } from "./feed/PostList.js";
 import { NavBar } from "./nav/NavBar.js";
 import { Footer } from "./nav/Footer.js";
 import { PostEntry } from "./feed/PostEntry.js";
 import { PostEdit } from "./feed/PostEdit.js";
+import { LoginForm } from "./auth/LoginForm.js";
+import { RegisterForm } from "./auth/RegisterForm.js";
 
 const applicationElement = document.querySelector("main");
-
-applicationElement.addEventListener("click", event => {
-    if (event.target.id === "logout") {
-        console.log("Peace out cub scout.")
-    }
-})
 
 applicationElement.addEventListener("change", event => {
     if (event.target.id === "yearSelection") {
@@ -120,12 +112,52 @@ applicationElement.addEventListener("click", event => {
     }
 })
 
-  applicationElement.addEventListener("click", event => {
+applicationElement.addEventListener("click", event => {
     if (event.target.id === "logout") {
       logoutUser();
       console.log(getLoggedInUser());
+      sessionStorage.clear();
+      checkForUser();
     }
-  })
+})
+
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id === "login__submit") {
+      //collect all the details into an object
+      const userObject = {
+        name: document.querySelector("input[name='name']").value,
+        email: document.querySelector("input[name='email']").value
+      }
+      loginUser(userObject)
+      .then(dbUserObj => {
+        if(dbUserObj){
+          sessionStorage.setItem("user", JSON.stringify(dbUserObj));
+          startGiffyGram();
+        }else {
+          //got a false value - no user
+          const entryElement = document.querySelector(".entryForm");
+          entryElement.innerHTML = `<p class="center">That user does not exist. Please try again or register for your free account.</p> ${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
+        }
+      })
+    }
+})
+
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id === "register__submit") {
+      //collect all the details into an object
+      const userObject = {
+        name: document.querySelector("input[name='registerName']").value,
+        email: document.querySelector("input[name='registerEmail']").value
+      }
+      registerUser(userObject)
+      .then(dbUserObj => {
+        sessionStorage.setItem("user", JSON.stringify(dbUserObj));
+        startGiffyGram();
+      })
+    }
+})
 
 const showFilteredPosts = (year) => {
     //get a copy of the post collection
@@ -139,7 +171,6 @@ const showFilteredPosts = (year) => {
     const postElement = document.querySelector(".postList");
     postElement.innerHTML = PostList(filteredData);
 }
-
 
 const showPostList = () => {
     const postElement = document.querySelector(".postList");
@@ -164,23 +195,31 @@ const showPostEntry = () => {
     entryElement.innerHTML = PostEntry();
 }
 
-<<<<<<< HEAD
 const checkForUser = () => {
-    if (sessionStorage.getItem("user")){
-      //this is expecting an object. Need to fix
+    if (sessionStorage.getItem("user")) {
+        //this is expecting an object. Need to fix
         setLoggedInUser(JSON.parse(sessionStorage.getItem("user")));
-      startGiffyGram();
-    }else {
-      //show login/register
-      console.log("showLogin")
+        startGiffyGram();
+    } else {
+        //show login/register
+        showLoginRegister();
     }
-  }
-=======
+}
+
+const showLoginRegister = () => {
+    showNavBar();
+    const entryElement = document.querySelector(".entryForm");
+    //template strings can be used here too
+    entryElement.innerHTML = `${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
+    //make sure the post list is cleared out too
+    const postElement = document.querySelector(".postList");
+    postElement.innerHTML = "";
+}
+
 const showEdit = (postObj) => {
     const entryElement = document.querySelector(".entryForm");
     entryElement.innerHTML = PostEdit(postObj);
 }
->>>>>>> main
 
 const startGiffyGram = () => {
     showPostList();
@@ -188,7 +227,6 @@ const startGiffyGram = () => {
     showFooter();
     showFilteredPosts();
     showPostEntry();
-
 }
 
 checkForUser()
