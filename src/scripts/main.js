@@ -121,11 +121,12 @@ applicationElement.addEventListener("click", event => {
     }
 })
 
+let userObject = {}
 applicationElement.addEventListener("click", event => {
     event.preventDefault();
     if (event.target.id === "login__submit") {
       //collect all the details into an object
-      const userObject = {
+      userObject = {
         name: document.querySelector("input[name='name']").value,
         email: document.querySelector("input[name='email']").value
       }
@@ -175,7 +176,7 @@ const showFilteredPosts = (year) => {
 const showPostList = () => {
     const postElement = document.querySelector(".postList");
     getPosts().then((allPosts) => {
-        postElement.innerHTML = PostList(allPosts.reverse());
+        postElement.innerHTML = PostList(allPosts.reverse(), userObject.name);
     })
 }
 
