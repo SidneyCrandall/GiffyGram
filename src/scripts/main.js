@@ -1,21 +1,19 @@
+<<<<<<< HEAD
 import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, logoutUser, setLoggedInUser } from "./data/DataManager.js";
+=======
+import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, updatePost, getSinglePost, getUsers } from "./data/DataManager.js";
+>>>>>>> main
 import { PostList } from "./feed/PostList.js";
 import { NavBar } from "./nav/NavBar.js";
 import { Footer } from "./nav/Footer.js";
 import { PostEntry } from "./feed/PostEntry.js";
+import { PostEdit } from "./feed/PostEdit.js";
 
 const applicationElement = document.querySelector("main");
 
 applicationElement.addEventListener("click", event => {
     if (event.target.id === "logout") {
         console.log("Peace out cub scout.")
-    }
-})
-
-applicationElement.addEventListener("click", event => {
-    if (event.target.id.startsWith("edit")) {
-        console.log("post clicked", event.target.id.split("--"))
-        console.log("the id is", event.target.id.split("--")[1])
     }
 })
 
@@ -46,20 +44,22 @@ applicationElement.addEventListener("click", event => {
         const title = document.querySelector("input[name='postTitle']").value
         const url = document.querySelector("input[name='postURL']").value
         const description = document.querySelector("textarea[name='postDescription']").value
-            //we have not created a user yet - for now, we will hard code `1`.
-            //we can add the current time as well
+        //we have not created a user yet - for now, we will hard code `1`.
+        //we can add the current time as well
         const postObject = {
-                title: title,
-                imageURL: url,
-                description: description,
-                userId: getLoggedInUser().id,
-                timestamp: Date.now()
-            }
-            // be sure to import from the DataManager
+            title: title,
+            imageURL: url,
+            description: description,
+            userId: getLoggedInUser().id,
+            timestamp: Date.now()
+        }
+        // be sure to import from the DataManager
         createPost(postObject)
-            .then(response => {
-                showPostList();
-            })
+        //*.then(response => {
+        showPostList();
+        showPostEntry();
+    } else if (event.target.id === "newPost__cancel") {
+        showPostEntry();
     }
 })
 
@@ -72,13 +72,53 @@ applicationElement.addEventListener("click", event => {
 applicationElement.addEventListener("click", event => {
     event.preventDefault();
     if (event.target.id.startsWith("delete")) {
-      const postId = event.target.id.split("__")[1];
-      deletePost(postId)
-        .then(response => {
-          showPostList();
-        })
+        const postId = event.target.id.split("__")[1];
+        deletePost(postId)
+            .then(response => {
+                showPostList();
+            })
     }
-  })
+})
+
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id.startsWith("edit")) {
+        const postId = event.target.id.split("__")[1];
+        getSinglePost(postId)
+            .then(response => {
+                showEdit(response);
+            })
+    }
+})
+
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id.startsWith("updatePost")) {
+        const postId = event.target.id.split("__")[1];
+        //collect all the details into an object
+        const title = document.querySelector("input[name='postTitle']").value
+        const url = document.querySelector("input[name='postURL']").value
+        const description = document.querySelector("textarea[name='postDescription']").value
+        const timestamp = document.querySelector("input[name='postTime']").value
+
+        const postObject = {
+            title: title,
+            imageURL: url,
+            description: description,
+            userId: getLoggedInUser().id,
+            timestamp: parseInt(timestamp),
+            id: parseInt(postId)
+        }
+
+        updatePost(postObject)
+            .then(response => {
+                showPostList();
+            })
+            .then(response => {
+                showPostEntry();
+            })
+    }
+})
 
   applicationElement.addEventListener("click", event => {
     if (event.target.id === "logout") {
@@ -124,6 +164,7 @@ const showPostEntry = () => {
     entryElement.innerHTML = PostEntry();
 }
 
+<<<<<<< HEAD
 const checkForUser = () => {
     if (sessionStorage.getItem("user")){
       //this is expecting an object. Need to fix
@@ -134,6 +175,12 @@ const checkForUser = () => {
       console.log("showLogin")
     }
   }
+=======
+const showEdit = (postObj) => {
+    const entryElement = document.querySelector(".entryForm");
+    entryElement.innerHTML = PostEdit(postObj);
+}
+>>>>>>> main
 
 const startGiffyGram = () => {
     showPostList();
@@ -141,6 +188,7 @@ const startGiffyGram = () => {
     showFooter();
     showFilteredPosts();
     showPostEntry();
+
 }
 
 checkForUser()
