@@ -41,12 +41,17 @@ export const deletePost = postId => {
         .then(getPosts)
   }
 
-const loggedInUser = {
-    id: 1,
-    name: "Sidney",
-    email: "Sidney@sc.com"
-};
+let loggedInUser = {};
 
 export const getLoggedInUser = () => {
     return {...loggedInUser };
 }
+
+export const logoutUser = () => {
+    loggedInUser = {}
+}
+
+export const setLoggedInUser = (userObj) => {
+    loggedInUser = userObj;
+  }
+  

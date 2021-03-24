@@ -1,4 +1,4 @@
-import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser } from "./data/DataManager.js";
+import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, logoutUser, setLoggedInUser } from "./data/DataManager.js";
 import { PostList } from "./feed/PostList.js";
 import { NavBar } from "./nav/NavBar.js";
 import { Footer } from "./nav/Footer.js";
@@ -80,6 +80,13 @@ applicationElement.addEventListener("click", event => {
     }
   })
 
+  applicationElement.addEventListener("click", event => {
+    if (event.target.id === "logout") {
+      logoutUser();
+      console.log(getLoggedInUser());
+    }
+  })
+
 const showFilteredPosts = (year) => {
     //get a copy of the post collection
     const epoch = Date.parse(`01/01/${year}`);
@@ -117,6 +124,17 @@ const showPostEntry = () => {
     entryElement.innerHTML = PostEntry();
 }
 
+const checkForUser = () => {
+    if (sessionStorage.getItem("user")){
+      //this is expecting an object. Need to fix
+        setLoggedInUser(JSON.parse(sessionStorage.getItem("user")));
+      startGiffyGram();
+    }else {
+      //show login/register
+      console.log("showLogin")
+    }
+  }
+
 const startGiffyGram = () => {
     showPostList();
     showNavBar();
@@ -125,4 +143,4 @@ const startGiffyGram = () => {
     showPostEntry();
 }
 
-startGiffyGram()
+checkForUser()
