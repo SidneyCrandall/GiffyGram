@@ -1,4 +1,4 @@
-import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, updatePost, getSinglePost, getUsers, loginUser, registerUser, setLoggedInUser, logoutUser } from "./data/DataManager.js";
+import { getPosts, usePostCollection, createPost, deletePost, getLoggedInUser, updatePost, getSinglePost, getUsers, loginUser, registerUser, setLoggedInUser, logoutUser, postLike } from "./data/DataManager.js";
 import { PostList } from "./feed/PostList.js";
 import { NavBar } from "./nav/NavBar.js";
 import { Footer } from "./nav/Footer.js";
@@ -83,6 +83,14 @@ applicationElement.addEventListener("click", event => {
     }
 })
 
+applicationElement.addEventListener("click", (event) => {
+	
+	if (event.target.id.startsWith("edit")){
+		console.log("post clicked", event.target.id.split("--"))
+		console.log("the id is", event.target.id.split("--")[1])
+	}
+})
+
 applicationElement.addEventListener("click", event => {
     event.preventDefault();
     if (event.target.id.startsWith("updatePost")) {
@@ -101,23 +109,21 @@ applicationElement.addEventListener("click", event => {
             timestamp: parseInt(timestamp),
             id: parseInt(postId)
         }
+        showPostEntry();
 
         updatePost(postObject)
             .then(response => {
                 showPostList();
-            })
-            .then(response => {
-                showPostEntry();
             })
     }
 })
 
 applicationElement.addEventListener("click", event => {
     if (event.target.id === "logout") {
-      logoutUser();
-      console.log(getLoggedInUser());
-      sessionStorage.clear();
-      checkForUser();
+        logoutUser();
+        console.log(getLoggedInUser());
+        sessionStorage.clear();
+        checkForUser();
     }
 })
 
@@ -125,38 +131,61 @@ let userObject = {}
 applicationElement.addEventListener("click", event => {
     event.preventDefault();
     if (event.target.id === "login__submit") {
-      //collect all the details into an object
-      userObject = {
-        name: document.querySelector("input[name='name']").value,
-        email: document.querySelector("input[name='email']").value
-      }
-      loginUser(userObject)
-      .then(dbUserObj => {
-        if(dbUserObj){
-          sessionStorage.setItem("user", JSON.stringify(dbUserObj));
-          startGiffyGram();
-        }else {
-          //got a false value - no user
-          const entryElement = document.querySelector(".entryForm");
-          entryElement.innerHTML = `<p class="center">That user does not exist. Please try again or register for your free account.</p> ${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
+        //collect all the details into an object
+        userObject = {
+            name: document.querySelector("input[name='name']").value,
+            email: document.querySelector("input[name='email']").value
         }
-      })
+        loginUser(userObject)
+            .then(dbUserObj => {
+                if (dbUserObj) {
+                    sessionStorage.setItem("user", JSON.stringify(dbUserObj));
+                    startGiffyGram();
+                } else {
+                    //got a false value - no user
+                    const entryElement = document.querySelector(".entryForm");
+                    entryElement.innerHTML = `<p class="center">That user does not exist. Please try again or register for your free account.</p> ${LoginForm()} <hr/> <hr/> ${RegisterForm()}`;
+                }
+            })
     }
 })
 
 applicationElement.addEventListener("click", event => {
     event.preventDefault();
     if (event.target.id === "register__submit") {
-      //collect all the details into an object
-      const userObject = {
-        name: document.querySelector("input[name='registerName']").value,
-        email: document.querySelector("input[name='registerEmail']").value
-      }
-      registerUser(userObject)
-      .then(dbUserObj => {
-        sessionStorage.setItem("user", JSON.stringify(dbUserObj));
-        startGiffyGram();
-      })
+        //collect all the details into an object
+        const userObject = {
+            name: document.querySelector("input[name='registerName']").value,
+            email: document.querySelector("input[name='registerEmail']").value
+        }
+        registerUser(userObject)
+            .then(dbUserObj => {
+                sessionStorage.setItem("user", JSON.stringify(dbUserObj));
+                startGiffyGram();
+            })
+    }
+})
+
+applicationElement.addEventListener("click", event => {
+    event.preventDefault();
+    if (event.target.id.startsWith("like")) {
+        const likeObject = {
+            postId: event.target.id.split("__")[1],
+            userId: getLoggedInUser().id
+        }
+        postLike(likeObject)
+            .then(response => {
+                showPostList();
+            })
+    }
+})
+
+applicationElement.addEventListener("click", event => {
+    if (event.target.id === "userposts") {
+      const postElement = document.querySelector(".postList");
+        userPosts(getLoggedInUser().id).then((allPosts) => {
+            postElement.innerHTML = PostList(allPosts, userObject.name);
+        })
     }
 })
 
