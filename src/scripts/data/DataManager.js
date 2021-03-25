@@ -1,12 +1,23 @@
-let postCollection = [];
-
 export const getUsers = () => {
     return fetch("http://localhost:8088/users")
-        .then(response => response.json())
+    .then(response => response.json())
 };
+
+let postCollection = [];
 
 export const usePostCollection = () => {
     return [...postCollection];
+}
+
+export const getPosts = () => {
+    const userId = getLoggedInUser().id
+    return fetch(`http://localhost:8088/posts?_expand=user`)
+        .then(response => response.json())
+        .then(parsedResponse => {
+            console.log("data with user", parsedResponse)
+            postCollection = parsedResponse
+            return parsedResponse;
+        })
 }
 
 export const createPost = postObj => {
@@ -49,6 +60,25 @@ export const updatePost = postObj => {
         .then(getPosts)
 }
 
+export const postLike = likeObject => {
+	return fetch(`http://localhost:8088/userLikes/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify(likeObject)
+	})
+		.then(response => response.json())
+		.then(getPosts)
+}
+
+export const getLikes = (postId) => {
+	console.log('getLikes for', postId );
+	
+	return fetch(`http://localhost:8088/userLikes?postId=${postId}`)
+		.then(response => response.json())
+}
+
 let loggedInUser = {};
 
 export const getLoggedInUser = () => {
@@ -81,26 +111,15 @@ export const loginUser = (userObj) => {
 
 export const registerUser = (userObj) => {
     return fetch(`http://localhost:8088/users`, {
-      method: "POST",
+        method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(userObj)
     })
-    .then(response => response.json())
-    .then(parsedUser => {
-      setLoggedInUser(parsedUser);
-      return getLoggedInUser();
-    })
-}
-
-export const getPosts = () => {
-    const userId = getLoggedInUser().id
-    return fetch(`http://localhost:8088/posts?_expand=user`)
-      .then(response => response.json())
-      .then(parsedResponse => {
-        console.log("data with user", parsedResponse)
-        postCollection = parsedResponse
-        return parsedResponse;
-      })
+        .then(response => response.json())
+        .then(parsedUser => {
+            setLoggedInUser(parsedUser);
+            return getLoggedInUser();
+        })
 }
